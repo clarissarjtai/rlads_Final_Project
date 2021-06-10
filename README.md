@@ -1,5 +1,8 @@
 # rlads_Final_Project
 rlads_Final_Project
+author: 戴若竹、余孟琦、洪智恆、林宣戎
+title: RLADS  Final Project and Presentation
+
 
 打算回答什麼問題？
 探討疫情期間確診病例數與股市之間各面向的關係
