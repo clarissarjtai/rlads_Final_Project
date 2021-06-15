@@ -196,7 +196,7 @@ ggplotly(p)
 # saveWidget(ggplotly(p), file="plot\\stock\\SP500_7MA對US_COVID_std.html")
 
 ```
-從此圖可以看出美國的股市只有在疫情初期受到劇烈的影響，疫情中期之後無論確診病例數為何，基本上標普500指數都是穩定上升。
+從此圖可以看出美國的股市只有在疫情初期受到劇烈的影響，疫情中期之後無論確診病例數為何，基本上標普500指數都是穩定上升，其中一個因素在於美國(甚至是全球各國)持續進行「量化寬鬆」的貨幣政策，針對特定對象進行「紓困」，並透過印鈔使市場上流動的資金增加，從而達到短期解決市場信心與消費不振的問題([參考資料](https://www.vox.com/business-and-finance/22421417/stock-market-pandemic-economy))。
 
 ## 台灣大盤指數-COVID-19確診人數散佈圖/趨勢圖
 ```{r warning=FALSE, message=FALSE}
@@ -247,24 +247,7 @@ ggplotly(p)
 # saveWidget(ggplotly(p), file="plot\\stock\\US_RMSE(monthly).html")
 
 ```
-從該圖表中可以看出，2020年11月以前的每日確診數與與類股指數波動都有一定的相關性，12月到1月這段期間的RMSE明顯提高，顯示出在這段期間類股指數的變動率遠大於確診數。也就是說[美國新增確診數從1月逐漸下降](https://www.nytimes.com/interactive/2021/us/covid-cases.html)，但是下降幅度不及各大類股上升的幅度。以下取出在2020年12月至2021年1月之間，RMSE波動最大的兩個產業類股與波動最小的兩個類股進行分析：
-
-* RMSE波動較大：
-  + 醫療保健類股指數(Health Care)
-    + 美國於12月分別給予輝瑞疫苗與莫德納疫苗緊急使用授權，使得醫療保健類股指數在這段期間指數大幅上漲。
-    [BBC中文網：新冠疫苗開打，你應當知道的幾大問題](https://www.bbc.com/zhongwen/trad/science-55332811)
-  + 能源類股(Energy)
-    + 燃油佔能源產業大宗，國際旅行的大幅減少使得美國對於能源的需求下降。
-    [Economic Change and Restructuring: Impact of COVID-19 pandemic on the energy markets](https://link.springer.com/article/10.1007/s10644-021-09320-0)
-    + 從12月中下旬開始出入境的旅客數開始恢復穩定在百萬人次以上，間接解釋能源類股大幅上升的原因。
-    [TSA: checkpoint travel numbers per day](https://www.tsa.gov/coronavirus/passenger-throughput)
-
-* RMSE波動較小：
-  + 不動產類股(Real Estate)
-    + 房地產業只要都是受到疫情的影響，因此RMSE就比較沒有太巨大的波動。
-  + 必須性消費品(Consumer Staples)
-    + 民生必需品並不會因為疫情的嚴重與疫情相關的政策而有太大的的改變。
-    [美國聯邦儲備銀行經濟研究](https://www.stlouisfed.org/on-the-economy/2021/march/covid19-impacted-stock-performance-industry)
+若單純觀察美國每日新增確診人數與美國SP500指數的RMSE，可以發現主要的波動有兩次，第一次落在2020年3月至4月，而第二次則是落在2020年12月至2021年1月。第一次的RMSE波動主要就是受到新冠肺炎疫情第一次升溫的影響([佐證資料](https://www.ripublication.com/irbf20/irbfv12n1_01.pdf))。第二次的RMSE波動則與第二次疫情升溫沒有太大影響，反而是因為美國2020年12月開始實施一系列疫情的應對措施，使得投資這對未來疫情的控制充滿了希望([佐證資料](https://www.washingtonpost.com/business/2020/12/31/stock-market-record-2020/))。
 
 
 # 美國SP500各類股指數對確診人數之rmse(每月)
@@ -292,8 +275,25 @@ p <- ggplot() +
 
 ggplotly(p)
 # saveWidget(ggplotly(p), file="plot\\stock\\11_Categories_RMSE_SP500.html")
-
 ```
+該圖表將美國SP500的11個產業類股進行分別觀察，可以看出2020年11月以前的每日確診數與各類股指數波動都有一定的相關性，12月到1月這段期間的RMSE明顯提高，顯示出在這段期間類股指數的變動率遠大於確診數。也就是說[美國新增確診數從1月逐漸下降](https://www.nytimes.com/interactive/2021/us/covid-cases.html)，但是下降幅度不及各大類股上升的幅度。以下取出在2020年12月至2021年1月之間，RMSE波動最大的兩個產業類股與波動最小的兩個類股進行分析：
+
+* RMSE波動較大：
+  + 醫療保健類股指數(Health Care)
+    + 美國於12月分別給予輝瑞疫苗與莫德納疫苗緊急使用授權，使得醫療保健類股指數在這段期間指數大幅上漲。
+    [BBC中文網：新冠疫苗開打，你應當知道的幾大問題](https://www.bbc.com/zhongwen/trad/science-55332811)
+  + 能源類股(Energy)
+    + 燃油佔能源產業大宗，國際旅行的大幅減少使得美國對於能源的需求下降。
+    [Economic Change and Restructuring: Impact of COVID-19 pandemic on the energy markets](https://link.springer.com/article/10.1007/s10644-021-09320-0)
+    + 從12月中下旬開始出入境的旅客數開始恢復穩定在百萬人次以上，間接解釋能源類股大幅上升的原因。
+    [TSA: checkpoint travel numbers per day](https://www.tsa.gov/coronavirus/passenger-throughput)
+
+* RMSE波動較小：
+  + 不動產類股(Real Estate)
+    + 房地產業只要都是受到疫情的影響，因此RMSE就比較沒有太巨大的波動。
+  + 必須性消費品(Consumer Staples)
+    + 民生必需品並不會因為疫情的嚴重與疫情相關的政策而有太大的的改變。
+    [美國聯邦儲備銀行經濟研究](https://www.stlouisfed.org/on-the-economy/2021/march/covid19-impacted-stock-performance-industry)
 
 ## 比特幣、原油、黃金指數對確診人數之rmse(每月)
 ```{r warning=FALSE, message=FALSE}
