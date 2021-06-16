@@ -622,7 +622,7 @@ for (i in 1:32){
     geom_point() +
     geom_smooth(method = "lm")+
     ylim(-2.5,2.5)+
-    labs(title = paste0(name,"類股_變動率對單日確診人數作圖"), x ="單日確診人數", y = "標準化後類股指數") + 
+    labs(title = paste0(name,"類股_變動率對單日確診人數變動率作圖"), x ="單日確診人數變動率", y = "類股指數變動率") + 
     theme_bw()
   
   print(ggplotly(p))
@@ -681,58 +681,107 @@ group_plt_df_cvaw_stock <- plt_df_cvaw_stock %>%
 ```
 
 ```{r}
-ggplot(data = plt_df_cvaw_covid)+
-    geom_point(aes(x = Valence_Avg, y = Arousal_Avg, color = Date), size = 0.1)
-ggplot(data = plt_df_cvaw_covid)+
-    geom_point(aes(x = Valence_Sum, y = Arousal_Sum, color = Date), size = 0.1)
+temp_p = ggplot(data = plt_df_cvaw_covid)+
+    geom_point(aes(x = Valence_Avg, y = Arousal_Avg, color = Date), size = 0.1)+
+    theme_bw()
+ggplotly(temp_p)
+
+temp_p = ggplot(data = plt_df_cvaw_covid)+
+    geom_point(aes(x = Valence_Sum, y = Arousal_Sum, color = Date), size = 0.1)+
+    theme_bw()
+ggplotly(temp_p)
 ```
 
 ```{r}
 #
-ggplot()+
+p1<-ggplot()+
     geom_hline(yintercept = 0)+
     geom_line(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date), color = "red")+
-    geom_line(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date), color = "blue")
+    geom_line(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date), color = "blue")+
+    labs(title = "COVID版與股版日期對平均情緒分數折線圖" , x = "日期", y= "平均情緒分數")+
+    theme_bw()
+
+ggplotly(p1)
 #
-ggplot()+
+p2<-ggplot()+
     geom_hline(yintercept = 0)+
     geom_vline(xintercept = 0)+
     geom_point(aes(x=group_plt_df_cvaw_covid$score_avg_date, y=group_plt_df_cvaw_stock$score_avg_date))+
-    geom_smooth(aes(x=group_plt_df_cvaw_covid$score_avg_date, y=group_plt_df_cvaw_stock$score_avg_date))
+    geom_smooth(aes(x=group_plt_df_cvaw_covid$score_avg_date, y=group_plt_df_cvaw_stock$score_avg_date), method="lm")+
+    labs(title = "COVID版對股版平均情緒分數散佈圖" , x = "COVID版平均情緒分數", y= "股版平均情緒分數")+
+    theme_bw()
+
+ggplotly(p2)
 ```
 
-## 各版對大盤指數變動率
+## 各版對新增人數變動率
 ```{r}
-# covid-19板對大盤
-ggplot()+
+# covid-19板對新增人數變動率
+temp_p = ggplot()+
+    geom_hline(yintercept = 0) +
+    geom_point(data = plt_df_cvaw_covid, aes(x = Date , y = score_avg), color = ifelse(plt_df_cvaw_covid$score_avg >= 0, "pink", "lightgreen"), size = 1)+
+    geom_line(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), color = "darkgray") +
+    geom_point(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), 
+               color = ifelse(TAIEX_COVID_df$日新增案例變動率 >= 0, "red", "darkgreen"), 
+               size = abs(TAIEX_COVID_df$日新增案例變動率)*3) + 
+    
+    theme_bw() + 
+    labs(title = "Covid-19版情緒分析-對新增病例變動率")
+ggplotly(temp_p)
+```
+
+```{r}
+# stock板對新增人數變動率
+temp_p =ggplot()+
+    geom_hline(yintercept = 0) +
+    geom_point(data = plt_df_cvaw_stock, aes(x = Date, y = score_avg), color = ifelse(plt_df_cvaw_stock$score_avg >= 0, "pink", "lightgreen"), size = 1)+
+    geom_line(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*10), color = "darkgray") + 
+    geom_point(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*10), 
+               color = ifelse(TAIEX_COVID_df$日新增案例變動率 >= 0, "red", "darkgreen"), 
+               size = abs(TAIEX_COVID_df$日新增案例變動率) * 3) + 
+    
+    theme_bw() + 
+    labs(title = "股版情緒分析-對新增病例變動率") 
+ggplotly(temp_p)
+```
+
+## 各版對大盤變動率
+```{r}
+# covid-19板對大盤變動率
+temp_p = ggplot()+
     geom_hline(yintercept = 0) +
     geom_point(data = plt_df_cvaw_covid, aes(x = Date , y = score_avg), color = ifelse(plt_df_cvaw_covid$score_avg >= 0, "pink", "lightgreen"), size = 1)+
     geom_line(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), color = "darkgray") +
     geom_point(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), 
                color = ifelse(TAIEX_COVID_df$大盤變動率 >= 0, "red", "darkgreen"), 
-               size = abs(TAIEX_COVID_df$大盤變動率) * 100) + 
+               size = abs(TAIEX_COVID_df$大盤變動率)*100) + 
     
     theme_bw() + 
-    labs(title = "sentiment analysis in ptt covid-19")
+    labs(title = "Covid-19版情緒分析-對大盤變動率")
+ggplotly(temp_p)
 ```
 
 ```{r}
-# stock板對大盤
-ggplot()+
+# stock板對新增人數變動率
+temp_p =ggplot()+
     geom_hline(yintercept = 0) +
     geom_point(data = plt_df_cvaw_stock, aes(x = Date, y = score_avg), color = ifelse(plt_df_cvaw_stock$score_avg >= 0, "pink", "lightgreen"), size = 1)+
-    geom_line(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*5), color = "darkgray") + 
-    geom_point(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*5), 
+    geom_line(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*10), color = "darkgray") + 
+    geom_point(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*10), 
                color = ifelse(TAIEX_COVID_df$大盤變動率 >= 0, "red", "darkgreen"), 
                size = abs(TAIEX_COVID_df$大盤變動率) * 100) + 
     
     theme_bw() + 
-    labs(title = "sentiment analysis in ptt stock") 
+    labs(title = "股版情緒分析-對大盤變動率") 
+ggplotly(temp_p)
 ```
+
 ## 各版對類股指數變動率
+
+###觀光類股
 ```{r}
 # coivd-19版對類股
-ggplot()+
+temp_p= ggplot()+
     geom_hline(yintercept = 0) +
     geom_point(data = plt_df_cvaw_covid, aes(x = Date , y = score_avg), color = ifelse(plt_df_cvaw_covid$score_avg >= 0, "pink", "lightgreen"), size = 1)+
     geom_line(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), color = "darkgray") +
@@ -741,12 +790,13 @@ ggplot()+
                size = abs(TAIEX_ROC_df$觀光) * 100) + 
     
     theme_bw() + 
-    labs(title = "sentiment analysis in ptt covid-19")
+    labs(title = "Covid-19版情緒分析-對觀光類股變動率")
+ggplotly(temp_p)
 ```
 
 ```{r}
 # stock板對類股
-ggplot()+
+temp_p=ggplot()+
     geom_hline(yintercept = 0) +
     geom_point(data = plt_df_cvaw_stock, aes(x = Date, y = score_avg), color = ifelse(plt_df_cvaw_stock$score_avg >= 0, "pink", "lightgreen"), size = 1)+
     geom_line(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*5), color = "darkgray") + 
@@ -755,7 +805,38 @@ ggplot()+
                size = abs(TAIEX_ROC_df$觀光) * 100) + 
     
     theme_bw() + 
-    labs(title = "sentiment analysis in ptt stock") 
+    labs(title = "股版情緒分析-對觀光類股變動率") 
+ggplotly(temp_p)
 ```
 
+###光電類股
+```{r}
+# coivd-19版對類股
+temp_p= ggplot()+
+    geom_hline(yintercept = 0) +
+    geom_point(data = plt_df_cvaw_covid, aes(x = Date , y = score_avg), color = ifelse(plt_df_cvaw_covid$score_avg >= 0, "pink", "lightgreen"), size = 1)+
+    geom_line(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), color = "darkgray") +
+    geom_point(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), 
+               color = ifelse(TAIEX_ROC_df$光電 >= 0, "red", "darkgreen"), 
+               size = abs(TAIEX_ROC_df$光電) * 100) + 
+    
+    theme_bw() + 
+    labs(title = "Covid-19版情緒分析-對光電類股變動率")
+ggplotly(temp_p)
+```
+
+```{r}
+# stock板對類股
+temp_p=ggplot()+
+    geom_hline(yintercept = 0) +
+    geom_point(data = plt_df_cvaw_stock, aes(x = Date, y = score_avg), color = ifelse(plt_df_cvaw_stock$score_avg >= 0, "pink", "lightgreen"), size = 1)+
+    geom_line(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*5), color = "darkgray") + 
+    geom_point(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*5), 
+               color = ifelse(TAIEX_ROC_df$光電 >= 0, "red", "darkgreen"), 
+               size = abs(TAIEX_ROC_df$光電) * 100) + 
+    
+    theme_bw() + 
+    labs(title = "股版情緒分析-對光電類股變動率") 
+ggplotly(temp_p)
+```
 
