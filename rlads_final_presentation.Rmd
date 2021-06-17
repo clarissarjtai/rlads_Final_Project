@@ -57,6 +57,7 @@ knitr::opts_chunk$set(echo = TRUE)
   * **情緒分析**  
     + 資料區間：2021/04/01~2021/05/31
     + ptt covid版及stock版
+    + 使用[cvaw中文維度型情感詞典](http://nlp.innobic.yzu.edu.tw/resources/cvaw.html)
 
 
 # 資料前處理
@@ -682,6 +683,8 @@ for (i in 1:32){
 ```
 
 # 情緒分析
+已計算之各版情緒分數資料區間選取，考量情緒冷靜激動程度做加權分數
+
 ```{r warning=FALSE, message=FALSE}
 ## 台股
 # 大盤
@@ -700,6 +703,7 @@ TAIEX_ROC_df <- as_tibble(readr::read_csv("../rlads_Final_Project/data/cvaw/TAIE
     mutate(Date = as.Date(Date)) %>%
     filter(between(Date, as.Date("2021-04-01"), as.Date("2021-05-31")))
 
+# covid板
 plt_df_cvaw_covid <- as_tibble(readr::read_csv("../rlads_Final_Project/data/cvaw/cvaw_covid.csv")) %>%
     mutate(Date = as.Date(Date)) %>%
     filter(between(Date, as.Date("2021-04-01"), as.Date("2021-05-31"))) %>%
@@ -714,6 +718,7 @@ plt_df_cvaw_stock <- as_tibble(readr::read_csv("../rlads_Final_Project/data/cvaw
            score_avg = if_else(score_sum == 0, 0, round(score_sum / ((words_Num)** 2), 6)))
 ```
 
+計算每天各版平均情緒分數
 ```{r warning=FALSE, message=FALSE}
 ## 做每日平均分數
 # covid板
