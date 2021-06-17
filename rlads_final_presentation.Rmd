@@ -651,7 +651,7 @@ for (i in 1:32){
 }
 ```
 
-以觀光類股為例
+### 以觀光類股為例
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
   df = TAIEX_CAT_list[[14]]
   name = colnames(df)[2]
@@ -666,7 +666,7 @@ for (i in 1:32){
   
   ggplotly(p)
 ```
-以光電類股為例
+### 以光電類股為例
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
   df = TAIEX_CAT_list[[23]]
   name = colnames(df)[2]
@@ -832,7 +832,7 @@ ggplotly(temp_p)
 
 ## 各版對類股指數變動率
 
-###觀光類股
+### 以觀光類股為例
 ```{r warning=FALSE, message=FALSE}
 # coivd-19版對類股
 temp_p= ggplot()+
@@ -863,7 +863,7 @@ temp_p=ggplot()+
 ggplotly(temp_p)
 ```
 
-###光電類股
+### 以光電類股為例
 ```{r warning=FALSE, message=FALSE}
 # coivd-19版對類股
 temp_p= ggplot()+
