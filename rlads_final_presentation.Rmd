@@ -2,9 +2,10 @@
 author: "戴若竹(材料四 B06507019)  \n余孟琦(會計四 B06702049)  \n洪智恆(財金二 B08703026)  \n林宣戎(圖資四 B06106011)"
 title: "RLADS  \nFinal Project and Presentation"
 date: |
+  | 探討各面向疫情與股市之關系
   | 2021-06-17
   |
-  | 
+  |
 output:
   html_document:
     number_sections: yes
@@ -19,23 +20,28 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # 資料來源與主題說明
-打算回答什麼問題？
-探討疫情期間確診病例數與股市之間各面向的關係
+* 組名：謝舒凱好帥
+* 分工：
+  + 戴若竹(6)：台股美股資料前處理與分析、圖表繪製、統整
+  + 余孟琦(6)：美股資料整理、ppt資料爬蟲與整理、情緒分析
+  + 洪智恆(6)：台股資料整理與分析、情緒分析、其他補充說明
+  + 林宣戎(6)：美股資料整理與分析、說明撰寫、其他補充說明
 
-資料來源:
-[美股]
-* 資料區間：2020/01/01~2021/04/30
-* 美國病例數：Our World in Data，是英國牛津大學全球變化數據實驗室的科學出版物
-* sp500各類股歷史資料：MarketWatch，是一個提供金融信息、商業新聞、分析和股市數據的網站，道瓊公司的子公司(sp500將美國產業分成11大類股)
+資料來源：
 
-[台股]
-* 資料區間：2020/04/01~2021/05/31
-* 台灣病例數：台灣疫情報告(https://covid-19.nchc.org.tw/dt_005-covidTable_taiwan.php)
-* 使用r語言的quantmod包中的getSymbols函數擷取股價資料，資料來源自yahoo finance
-* 類股指數資料來源：來自台灣證券交易所公布之3-5月資料
+* **美股** 
+  + 資料區間：2020/01/01~2021/04/30
+  + 美國病例數：Our World in Data，是英國牛津大學全球變化數據實驗室的科學出版物
+  + sp500各類股歷史資料：MarketWatch，是一個提供金融信息、商業新聞、分析和股市數據的網站，道瓊公司的子公司(sp500將美國產業分成11大類股)
 
-[情緒分析]
-* 
+* **台股**
+  + 資料區間：2020/04/01~2021/05/31
+  + 台灣病例數：[台灣疫情報告](https://covid-19.nchc.org.tw/dt_005-covidTable_taiwan.php)
+  + 使用r語言的quantmod包中的getSymbols函數擷取股價資料，資料來源自yahoo finance
+  + 類股指數資料來源：來自台灣證券交易所公布之3-5月資料
+
+* **情緒分析**  
+  + ptt covid版及stock版
 
 
 # 資料前處理
@@ -60,7 +66,7 @@ library(tidyr)
 ```
 
 定義後續使用之函數
-```{r}
+```{r warning=FALSE, message=FALSE}
 # 計算標準化數據與其七日簡單平均、七日指數平均、變動率
 getMA_ROC <- function(df, prefix){
   df$Date <- as.Date(df$Date)
@@ -91,13 +97,13 @@ tw_cat_rmse <- function(df){
 
 ## 讀取原始資料
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 # read data
 list.files("../rlads_Final_Project/data/stock")
 # [1] "BTC-Oil-Gold-COVID.csv" "SP500.csv" "SP500_USnewcases.csv"   "TAIEX-COVID.csv"        "TAIEX.csv"              "TAIEX_7MA.csv"          "TAIEX_ROC.csv"         
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 btc_oil_gold = read.csv("../rlads_Final_Project/data/stock/BTC-Oil-Gold-COVID.csv", encoding = "UTF-8") # 比特幣-原油-黃金價格,七日簡單均線,變動率
 US_SP500_ALL = read.csv("../rlads_Final_Project/data/stock/SP500.csv", encoding = "UTF-8") # 美股標普五百指數原始數值
 US_SP500_CAT = read.csv("../rlads_Final_Project/data/stock/SP500_USnewcases.csv", encoding = "UTF-8") # 美股標普五百各類原始數值
@@ -113,12 +119,12 @@ names(data_list) = gsub("-", "_",list.files('data\\stock'))
 ```
 
 ## 整理欄位名稱與重新分類資料表
-```{r}
+```{r warning=FALSE, message=FALSE}
 # get column names
 col_names = lapply(data_list, colnames)
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 # rename data frame columns
 col_names[[7]] = paste0(col_names[[7]], "_ROC")
 col_names[[6]] = paste0(col_names[[6]], "_7MA")
@@ -133,7 +139,7 @@ for (i in 1:length(data_list)){
 
 重新分類data frame，原本的data frame含有重複的欄位(例如疫情資料)，僅保留所需欄位後，分類各類別資料並獨立各自成表。
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 TW_COVID = data_list[[4]][c("Date", "TW_COVID","TW_COVID_ROC" ,"TW_COVID_7MA", "TW_COVID_7EMA", "TW_COVID_CUM" )]
 US_COVID = data_list[[1]][c("Date","new_cases","new_cases_ROC","new_cases_7MA", "total_cases")]
 colnames(US_COVID) <- c("Date", "US_COVID","US_COVID_ROC" ,"US_COVID_7MA", "US_COVID_CUM")
@@ -146,7 +152,7 @@ US_SP500_CAT[c("X", "NewCases")] <- NULL # 要另外計算7MA, ROC
 # US_SP500_ALL, US_SP500_CAT要另外計算7MA, ROC
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 # 整理後新的data_list
 data_list = list(TW_COVID, US_COVID, BTC, OIL, GOLD, TAIEX_ALL, US_SP500_ALL)
 head(data_list[[1]])
@@ -154,7 +160,7 @@ head(data_list[[1]])
 ## 計算標準化後數值
 
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 col <- c("TW_COVID", "US_COVID", "BTC", "Oil", "Gold", "大盤", "SP500")
 
 for (i in 1:length(data_list)){
@@ -166,7 +172,7 @@ head(data_list[[1]])
 ```
 
 台灣類股與美國類股資料數眾多，獨立處理。
-```{r}
+```{r warning=FALSE, message=FALSE}
 # 台灣類股
 TAIEX_CAT_list = list()
 for (i in 2:length(TAIEX_CAT[[1]])){
@@ -213,7 +219,7 @@ ggplotly(p)
 
 ### 美國大盤指數變動率-COVID-19新增確診人數變動率散佈圖/趨勢圖
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 temp_data = full_join(data_list[[7]], data_list[[2]], by = "Date")
 p <- temp_data %>%
   ggplot( aes(US_COVID_ROC, SP500_ROC,  color=Date)) +
@@ -246,7 +252,7 @@ ggplotly(p)
 
 ### 台灣大盤指數變動率-COVID-19新增確診人數變動率散佈圖/趨勢圖
 將大盤指數乘以100使圖表比較更直觀
-```{r}
+```{r warning=FALSE, message=FALSE}
 temp_data = full_join(data_list[[6]], data_list[[1]], by = "Date") # [c("Date","大盤_std","大盤_7MA", "大盤_7EMA","大盤_ROC","TW_COVID_std")]
 
 p <- temp_data %>%
@@ -265,7 +271,7 @@ ggplotly(p)
 
 ### 比特幣-COVID-19確診人數趨勢圖/散佈圖
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 temp_data = full_join(data_list[[3]], data_list[[2]], by = "Date")
 
 p <- temp_data %>%
@@ -282,7 +288,7 @@ ggplotly(p)
 
 ### 比特幣變動率-COVID-19確診人數變動率趨勢圖/散佈圖
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 temp_data = full_join(data_list[[3]], data_list[[2]], by = "Date")
 
 p <- temp_data %>%
@@ -301,7 +307,7 @@ ggplotly(p)
 
 ### 石油-COVID-19確診人數趨勢圖/散佈圖
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 temp_data = full_join(data_list[[4]], data_list[[2]], by = "Date")
 
 p <- temp_data %>%
@@ -318,7 +324,7 @@ ggplotly(p)
 
 ### 石油變動率-COVID-19確診人數變動率趨勢圖/散佈圖
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 temp_data = full_join(data_list[[4]], data_list[[2]], by = "Date")
 
 p <- temp_data %>%
@@ -337,7 +343,7 @@ ggplotly(p)
 
 ### 黃金-COVID-19確診人數趨勢圖/散佈圖
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 temp_data = full_join(data_list[[5]], data_list[[2]], by = "Date")
 
 p <- temp_data %>%
@@ -354,7 +360,7 @@ ggplotly(p)
 
 ### 黃金變動率-COVID-19確診人數變動率趨勢圖/散佈圖
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 temp_data = full_join(data_list[[5]], data_list[[2]], by = "Date")
 
 p <- temp_data %>%
@@ -624,7 +630,7 @@ for (i in 1:32){
     labs(title = paste0(name,"類股_變動率對單日確診人數變動率作圖"), x ="單日確診人數變動率", y = "類股指數變動率") + 
     theme_bw()
   
-  print(ggplotly(p))
+  ggplotly(p)
   # saveWidget(ggplotly(p), file=paste0("plot\\stock\\",name,"類股_變動率對單日確診人數作圖.html"))
 }
 ```
@@ -642,7 +648,7 @@ for (i in 1:32){
     labs(title = paste0(name,"類股_變動率對單日確診人數作圖"), x ="單日確診人數", y = "標準化後類股指數") + 
     theme_bw()
   
-  print(ggplotly(p))
+  ggplotly(p)
 ```
 以光電類股為例
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
@@ -657,11 +663,11 @@ for (i in 1:32){
     labs(title = paste0(name,"類股_變動率對單日確診人數作圖"), x ="單日確診人數", y = "標準化後類股指數") + 
     theme_bw()
   
-  print(ggplotly(p))
+  ggplotly(p)
 ```
 
 # 情緒分析
-```{r}
+```{r warning=FALSE, message=FALSE}
 ## 台股
 # 大盤
 TAIEX_COVID_df <- as_tibble(readr::read_csv("../rlads_Final_Project/data/cvaw/TAIEX-COVID.csv")) %>%
@@ -693,7 +699,7 @@ plt_df_cvaw_stock <- as_tibble(readr::read_csv("../rlads_Final_Project/data/cvaw
            score_avg = if_else(score_sum == 0, 0, round(score_sum / ((words_Num)** 2), 6)))
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 ## 做每日平均分數
 # covid板
 group_plt_df_cvaw_covid <- plt_df_cvaw_covid %>%
@@ -708,7 +714,7 @@ group_plt_df_cvaw_stock <- plt_df_cvaw_stock %>%
     ungroup()
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 temp_p = ggplot(data = plt_df_cvaw_covid)+
     geom_point(aes(x = Valence_Avg, y = Arousal_Avg, color = Date), size = 0.1)+
     theme_bw()
@@ -720,7 +726,7 @@ temp_p = ggplot(data = plt_df_cvaw_covid)+
 ggplotly(temp_p)
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 #
 p1<-ggplot()+
     geom_hline(yintercept = 0)+
@@ -743,7 +749,7 @@ ggplotly(p2)
 ```
 
 ## 各版對新增人數變動率
-```{r}
+```{r warning=FALSE, message=FALSE}
 # covid-19板對新增人數變動率
 temp_p = ggplot()+
     geom_hline(yintercept = 0) +
@@ -758,7 +764,7 @@ temp_p = ggplot()+
 ggplotly(temp_p)
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 # stock板對新增人數變動率
 temp_p =ggplot()+
     geom_hline(yintercept = 0) +
@@ -774,7 +780,7 @@ ggplotly(temp_p)
 ```
 
 ## 各版對大盤變動率
-```{r}
+```{r warning=FALSE, message=FALSE}
 # covid-19板對大盤變動率
 temp_p = ggplot()+
     geom_hline(yintercept = 0) +
@@ -789,7 +795,7 @@ temp_p = ggplot()+
 ggplotly(temp_p)
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 # stock板對新增人數變動率
 temp_p =ggplot()+
     geom_hline(yintercept = 0) +
@@ -807,7 +813,7 @@ ggplotly(temp_p)
 ## 各版對類股指數變動率
 
 ###觀光類股
-```{r}
+```{r warning=FALSE, message=FALSE}
 # coivd-19版對類股
 temp_p= ggplot()+
     geom_hline(yintercept = 0) +
@@ -822,7 +828,7 @@ temp_p= ggplot()+
 ggplotly(temp_p)
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 # stock板對類股
 temp_p=ggplot()+
     geom_hline(yintercept = 0) +
@@ -838,7 +844,7 @@ ggplotly(temp_p)
 ```
 
 ###光電類股
-```{r}
+```{r warning=FALSE, message=FALSE}
 # coivd-19版對類股
 temp_p= ggplot()+
     geom_hline(yintercept = 0) +
@@ -853,7 +859,7 @@ temp_p= ggplot()+
 ggplotly(temp_p)
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 # stock板對類股
 temp_p=ggplot()+
     geom_hline(yintercept = 0) +
@@ -868,3 +874,4 @@ temp_p=ggplot()+
 ggplotly(temp_p)
 ```
 
+感謝閱讀。
