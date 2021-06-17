@@ -1,11 +1,10 @@
 ---
-author: "戴若竹(材料四 B06507019)  \n余孟琦(會計四 B06702049)  \n洪智恆(財金二 B08703026)  \n林宣戎(圖資四 B06106011)"
-title: "RLADS  \nFinal Project and Presentation"
+title: "RLADS  \nFinal Project and Presentation  \n探討各面向疫情與股市之關系"
 date: |
-  | 探討各面向疫情與股市之關系
   | 2021-06-17
   |
   |
+author: "戴若竹(材料四 B06507019)  \n余孟琦(會計四 B06702049)  \n洪智恆(財金二 B08703026)  \n林宣戎(圖資四 B06106011)"
 output:
   html_document:
     number_sections: yes
@@ -27,21 +26,21 @@ knitr::opts_chunk$set(echo = TRUE)
   + 洪智恆(6)：台股資料整理與分析、情緒分析、其他補充說明
   + 林宣戎(6)：美股資料整理與分析、說明撰寫、其他補充說明
 
-資料來源：
+* 資料來源
+  * **美股** 
+    + 資料區間：2020/01/01~2021/04/30
+    + 美國病例數：Our World in Data，是英國牛津大學全球變化數據實驗室的科學出版物
+    + sp500各類股歷史資料：MarketWatch，是一個提供金融信息、商業新聞、分析和股市數據的網站，道瓊公司的子公司(sp500將美國產業分成11大類股)
 
-* **美股** 
-  + 資料區間：2020/01/01~2021/04/30
-  + 美國病例數：Our World in Data，是英國牛津大學全球變化數據實驗室的科學出版物
-  + sp500各類股歷史資料：MarketWatch，是一個提供金融信息、商業新聞、分析和股市數據的網站，道瓊公司的子公司(sp500將美國產業分成11大類股)
+  * **台股**
+    + 資料區間：2021/04/01~2021/05/31
+    + 台灣病例數：[台灣疫情報告](https://covid-19.nchc.org.tw/dt_005-covidTable_taiwan.php)
+    + 使用r語言的quantmod包中的getSymbols函數擷取股價資料，資料來源自yahoo finance
+    + 類股指數資料來源：來自台灣證券交易所公布之3-5月資料
 
-* **台股**
-  + 資料區間：2020/04/01~2021/05/31
-  + 台灣病例數：[台灣疫情報告](https://covid-19.nchc.org.tw/dt_005-covidTable_taiwan.php)
-  + 使用r語言的quantmod包中的getSymbols函數擷取股價資料，資料來源自yahoo finance
-  + 類股指數資料來源：來自台灣證券交易所公布之3-5月資料
-
-* **情緒分析**  
-  + ptt covid版及stock版
+  * **情緒分析**  
+    + 資料區間：2021/04/01~2021/05/31
+    + ptt covid版及stock版
 
 
 # 資料前處理
