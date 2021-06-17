@@ -56,7 +56,7 @@ library(dygraphs)
 library(xts)
 library(caret)
 library(tidyr)
-library(ggpmisc)
+# library(ggpmisc)
 ```
 
 定義後續使用之函數
@@ -162,7 +162,7 @@ for (i in 1:length(data_list)){
   dat <- data_list[[i]]
   data_list[[i]] <- getMA_ROC(dat[c("Date",pref)], prefix = pref)
 }
-data_list
+head(data_list[[1]])
 ```
 
 台灣類股與美國類股資料數眾多，獨立處理。
@@ -627,10 +627,39 @@ for (i in 1:32){
   
   print(ggplotly(p))
   # saveWidget(ggplotly(p), file=paste0("plot\\stock\\",name,"類股_變動率對單日確診人數作圖.html"))
-  
 }
 ```
 
+以觀光類股為例
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+  df = TAIEX_CAT_list[[14]]
+  name = colnames(df)[2]
+  colnames(df)[3:6] <- c("std","ROC", "7MA", "7EMA")
+  df = full_join(df, data_list[[1]], by = "Date")
+  p <- ggplot(df, aes(TW_COVID_ROC , ROC*100,  color=Date)) +
+    geom_point() +
+    geom_smooth(method = "lm")+
+    ylim(-2.5,2.5)+
+    labs(title = paste0(name,"類股_變動率對單日確診人數作圖"), x ="單日確診人數", y = "標準化後類股指數") + 
+    theme_bw()
+  
+  print(ggplotly(p))
+```
+以光電類股為例
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+  df = TAIEX_CAT_list[[23]]
+  name = colnames(df)[2]
+  colnames(df)[3:6] <- c("std","ROC", "7MA", "7EMA")
+  df = full_join(df, data_list[[1]], by = "Date")
+  p <- ggplot(df, aes(TW_COVID_ROC , ROC*100,  color=Date)) +
+    geom_point() +
+    geom_smooth(method = "lm")+
+    ylim(-2.5,2.5)+
+    labs(title = paste0(name,"類股_變動率對單日確診人數作圖"), x ="單日確診人數", y = "標準化後類股指數") + 
+    theme_bw()
+  
+  print(ggplotly(p))
+```
 
 # 情緒分析
 ```{r}
