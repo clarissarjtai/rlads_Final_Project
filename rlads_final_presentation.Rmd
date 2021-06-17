@@ -631,7 +631,7 @@ ggplotly(p)
 
 ```
 
-### 台灣各類股變動率對單日確診人數變動率作圖
+### 台灣各類股變動率對單日新增確診人數變動率作圖
 將台股類股指數變動率乘上100使數據直觀
 ```{r warning=FALSE, message=FALSE}
 for (i in 1:32){
@@ -643,7 +643,7 @@ for (i in 1:32){
     geom_point() +
     geom_smooth(method = "lm")+
     ylim(-2.5,2.5)+
-    labs(title = paste0(name,"類股_變動率對單日確診人數變動率作圖"), x ="單日確診人數變動率", y = "類股指數變動率") + 
+    labs(title = paste0(name,"類股_變動率對單日新增確診人數變動率作圖"), x ="單日新增確診人數變動率", y = "類股指數變動率") + 
     theme_bw()
   
   ggplotly(p)
@@ -661,7 +661,7 @@ for (i in 1:32){
     geom_point() +
     geom_smooth(method = "lm")+
     ylim(-2.5,2.5)+
-    labs(title = paste0(name,"類股_變動率對單日確診人數作圖"), x ="單日確診人數", y = "標準化後類股指數") + 
+    labs(title = paste0(name,"類股_變動率對單日新增確診人數變動率作圖"), x ="單日新增確診人數變動率", y = "觀光指數變動率") + 
     theme_bw()
   
   ggplotly(p)
@@ -676,7 +676,7 @@ for (i in 1:32){
     geom_point() +
     geom_smooth(method = "lm")+
     ylim(-2.5,2.5)+
-    labs(title = paste0(name,"類股_變動率對單日確診人數作圖"), x ="單日確診人數", y = "標準化後類股指數") + 
+    labs(title = paste0(name,"類股_變動率對單日確診人數作圖"), x ="單日新增確診人數變動率", y = "觀光指數變動率") + 
     theme_bw()
   
   ggplotly(p)
