@@ -1,5 +1,5 @@
 ---
-title: "RLADS  \nFinal Project and Presentation  \n探討各面向疫情與股市之關系"
+title: "RLADS  \nFinal Project and Presentation  \n探討各面向疫情與股市之關係"
 date: |
   | 2021-06-17
   |
@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = FALSE)
 * 組名：謝舒凱好帥
 * 分工：
   + 戴若竹(6)：台股美股資料前處理與分析、圖表繪製、統整
-  + 余孟琦(6)：美股資料整理、ppt資料爬蟲與整理、情緒分析
+  + 余孟琦(6)：美股資料整理、ptt資料爬蟲與整理、情緒分析
   + 洪智恆(6)：台股資料整理與分析、情緒分析、其他補充說明
   + 林宣戎(6)：美股資料整理與分析、說明撰寫、其他補充說明
   
@@ -70,7 +70,6 @@ import packages
 library(htmlwidgets)
 library(webshot)
 library(dplyr)
-library(zoo)
 library(pracma)
 library(ggplot2)
 library(plotly)
@@ -683,22 +682,23 @@ for (i in 1:32){
 ```
 
 # 情緒分析
-已計算之各版情緒分數資料區間選取，考量情緒冷靜激動程度做加權分數
+## 初步情緒分數資料探勘
+經由前面所分析之台股與確診案例數的關係變化後，我們進一步透過網友們的情緒正負面態度，研究其是否也會反映股市或是確診人數的變化。
 
 ```{r warning=FALSE, message=FALSE}
 ## 台股
 # 大盤
-TAIEX_COVID_df <- as_tibble(readr::read_csv("../rlads_Final_Project/data/cvaw/TAIEX-COVID.csv")) %>%
+TAIEX_COVID_df <- as_tibble(readr::read_csv("../rlads_Final_Project/data/stock/TAIEX-COVID.csv")) %>%
     mutate(Date = as.Date(X1)) %>%
     select(-X1) %>%
     filter(between(Date, as.Date("2021-04-01"), as.Date("2021-05-31")))
 # 類股
-TAIEX_df <- as_tibble(readr::read_csv("../rlads_Final_Project/data/cvaw/TAIEX.csv")) %>%
+TAIEX_df <- as_tibble(readr::read_csv("../rlads_Final_Project/data/stock/TAIEX.csv")) %>%
     select(-X1) %>%
     mutate(Date = as.Date(Date)) %>%
     filter(between(Date, as.Date("2021-04-01"), as.Date("2021-05-31")))
 # 類股變動率
-TAIEX_ROC_df <- as_tibble(readr::read_csv("../rlads_Final_Project/data/cvaw/TAIEX_ROC.csv")) %>%
+TAIEX_ROC_df <- as_tibble(readr::read_csv("../rlads_Final_Project/data/stock/TAIEX_ROC.csv")) %>%
     select(-X1) %>%
     mutate(Date = as.Date(Date)) %>%
     filter(between(Date, as.Date("2021-04-01"), as.Date("2021-05-31")))
@@ -718,9 +718,9 @@ plt_df_cvaw_stock <- as_tibble(readr::read_csv("../rlads_Final_Project/data/cvaw
            score_avg = if_else(score_sum == 0, 0, round(score_sum / ((words_Num)** 2), 6)))
 ```
 
-計算每天各版平均情緒分數
+
 ```{r warning=FALSE, message=FALSE}
-## 做每日平均分數
+## 計算每天各版平均情緒分數
 # covid板
 group_plt_df_cvaw_covid <- plt_df_cvaw_covid %>%
     group_by(Date) %>%
@@ -734,41 +734,62 @@ group_plt_df_cvaw_stock <- plt_df_cvaw_stock %>%
     ungroup()
 ```
 
+在 Covid-19 板中，valence 對 arousal 的散布圖無論採用情緒總分 (sum)，或是考量到字詞多寡效果的平均分 (Avg)，皆沒有呈現特定趨勢，因此改用加權分數做下一步分析。
+
 ```{r warning=FALSE, message=FALSE}
 temp_p = ggplot(data = plt_df_cvaw_covid)+
     geom_point(aes(x = Valence_Avg, y = Arousal_Avg, color = Date), size = 0.1)+
-    theme_bw()
+    theme_bw() + 
+    labs(title = "Covid-19 版中 valence 對 arousal 的散布圖")
 ggplotly(temp_p)
 
 temp_p = ggplot(data = plt_df_cvaw_covid)+
     geom_point(aes(x = Valence_Sum, y = Arousal_Sum, color = Date), size = 0.1)+
-    theme_bw()
+    theme_bw() +
+    labs(title = "Covid-19 版中 valence 對 arousal 的散布圖")
 ggplotly(temp_p)
 ```
 
+Covid-19 板相對於 Stock 板，整體情緒分數呈現較為負面。而五月十五前後為台灣疫情爆發之時，Stock 板的情緒分數向下重挫，Covid-19 板反而沒有出現此向下趨勢。
+
 ```{r warning=FALSE, message=FALSE}
-#
+group_plt_df_cvaw <- rbind(mutate(group_plt_df_cvaw_covid, board = "covid"), mutate(group_plt_df_cvaw_stock, board = "stock"))
+
 p1<-ggplot()+
     geom_hline(yintercept = 0)+
-    geom_line(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date), color = "red")+
-    geom_line(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date), color = "blue")+
-    labs(title = "COVID版與股版日期對平均情緒分數折線圖" , x = "日期", y= "平均情緒分數")+
+    geom_line(data = group_plt_df_cvaw, aes(x = Date, y = score_avg_date, color = board))+
+    labs(title = "Covid-19 版與 Stock 版日期對平均情緒分數折線圖")+
     theme_bw()
 
 ggplotly(p1)
-#
+```
+
+接著探討 Covid-19 板是否與 Stock 板呈現相同趨勢。
+由散布圖與趨勢線可得之兩者為弱負相關，趨勢線接近水平。
+
+```{r warning=FALSE, message=FALSE}
 p2<-ggplot()+
     geom_hline(yintercept = 0)+
     geom_vline(xintercept = 0)+
     geom_point(aes(x=group_plt_df_cvaw_covid$score_avg_date, y=group_plt_df_cvaw_stock$score_avg_date))+
     geom_smooth(aes(x=group_plt_df_cvaw_covid$score_avg_date, y=group_plt_df_cvaw_stock$score_avg_date), method="lm")+
-    labs(title = "COVID版對股版平均情緒分數散佈圖" , x = "COVID版平均情緒分數", y= "股版平均情緒分數")+
+    labs(title = "Covid-19 版對 Stock 版平均情緒分數散佈圖" , x = "Covid-19 版平均情緒分數", y= "Stock版 平均情緒分數")+
     theme_bw()
 
 ggplotly(p2)
 ```
 
-## 各版對新增人數變動率
+篩選時間區間後，做 valence 對 arousal 的散布圖，因不同時間的點相互混雜，不易判斷趨勢，因此考量情緒冷靜激動程度做加權分數。
+
+加權分數計算方式：Σ[(word_valence - 5) * word_arousal]，使加權情緒分數呈正面即分數為正，負面即分數為負。
+
+## 各版對新增病例變動率
+圖上的粉紅與粉綠點為每篇文本的加權分數，而折線圖則是呈現每日平均情緒分數。
+
+線上的紅點與深綠點為研究目標（台股或是新增病例數）的變化率，增加以紅點表示，下降則是深綠點，而變動幅度的大小以點的大小表示。
+
+（折線圖的數值有經過放大，讓起伏較為明顯。）
+
 ```{r warning=FALSE, message=FALSE}
 # covid-19板對新增人數變動率
 temp_p = ggplot()+
@@ -780,7 +801,7 @@ temp_p = ggplot()+
                size = abs(TAIEX_COVID_df$日新增案例變動率)*3) + 
     
     theme_bw() + 
-    labs(title = "Covid-19版情緒分析-對新增病例變動率")
+    labs(title = "Covid-19 版情緒分析-對新增病例變動率")
 ggplotly(temp_p)
 ```
 
@@ -795,11 +816,15 @@ temp_p =ggplot()+
                size = abs(TAIEX_COVID_df$日新增案例變動率) * 3) + 
     
     theme_bw() + 
-    labs(title = "股版情緒分析-對新增病例變動率") 
+    labs(title = "Stock 版情緒分析-對新增病例變動率")
 ggplotly(temp_p)
 ```
 
+Stock 版在新增病例變動率上，當出現負面情緒時（五月十五日前後），多為當日新增病例較前一日增加。
+
 ## 各版對大盤變動率
+對於大盤，Stock 版在出現負面情緒的那幾天以跌居多，而大漲的時候也多為正面情緒。
+
 ```{r warning=FALSE, message=FALSE}
 # covid-19板對大盤變動率
 temp_p = ggplot()+
@@ -811,7 +836,7 @@ temp_p = ggplot()+
                size = abs(TAIEX_COVID_df$大盤變動率)*100) + 
     
     theme_bw() + 
-    labs(title = "Covid-19版情緒分析-對大盤變動率")
+    labs(title = "Covid-19 版情緒分析-對大盤變動率")
 ggplotly(temp_p)
 ```
 
@@ -826,11 +851,12 @@ temp_p =ggplot()+
                size = abs(TAIEX_COVID_df$大盤變動率) * 100) + 
     
     theme_bw() + 
-    labs(title = "股版情緒分析-對大盤變動率") 
+    labs(title = "Stock 版情緒分析-對大盤變動率") 
 ggplotly(temp_p)
 ```
 
 ## 各版對類股指數變動率
+類股部分，Stock 版在觀光與光電也有與上述所提相同的趨勢特性。
 
 ### 以觀光類股為例
 ```{r warning=FALSE, message=FALSE}
@@ -844,7 +870,7 @@ temp_p= ggplot()+
                size = abs(TAIEX_ROC_df$觀光) * 100) + 
     
     theme_bw() + 
-    labs(title = "Covid-19版情緒分析-對觀光類股變動率")
+    labs(title = "Covid-19 版情緒分析-對觀光類股變動率")
 ggplotly(temp_p)
 ```
 
@@ -859,7 +885,7 @@ temp_p=ggplot()+
                size = abs(TAIEX_ROC_df$觀光) * 100) + 
     
     theme_bw() + 
-    labs(title = "股版情緒分析-對觀光類股變動率") 
+    labs(title = "Stock 版情緒分析-對觀光類股變動率")
 ggplotly(temp_p)
 ```
 
@@ -875,7 +901,7 @@ temp_p= ggplot()+
                size = abs(TAIEX_ROC_df$光電) * 100) + 
     
     theme_bw() + 
-    labs(title = "Covid-19版情緒分析-對光電類股變動率")
+    labs(title = "Covid-19 版情緒分析-對光電類股變動率")
 ggplotly(temp_p)
 ```
 
@@ -890,8 +916,13 @@ temp_p=ggplot()+
                size = abs(TAIEX_ROC_df$光電) * 100) + 
     
     theme_bw() + 
-    labs(title = "股版情緒分析-對光電類股變動率") 
+    labs(title = "Stock 版情緒分析-對光電類股變動率")  
 ggplotly(temp_p)
 ```
 
-感謝閱讀。
+綜觀 ptt 情緒分析與股票的連結，在 4/1~5/31 此一期間，Covid-19 版的情緒變化與股票和新增病例數的連結較弱，而 Stock 板擇有顯現出與股票相連的特性。
+
+但由於我們僅採用兩個月的文本內容作分析，且股票之大漲和大跌的數量本身不多，若要針對情緒和股票的連結下定論或甚者做預測，仍操之過急。
+
+
+**感謝閱讀。**
