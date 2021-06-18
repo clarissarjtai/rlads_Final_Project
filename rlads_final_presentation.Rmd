@@ -794,7 +794,7 @@ ggplotly(p2)
 # covid-19板對新增人數變動率
 temp_p = ggplot()+
     geom_hline(yintercept = 0) +
-    geom_point(data = plt_df_cvaw_covid, aes(x = Date , y = score_avg), color = ifelse(plt_df_cvaw_covid$score_avg >= 0, "pink", "lightgreen"), size = 1)+
+    geom_point(data = plt_df_cvaw_covid, aes(x = Date , y = score_avg), color = ifelse(plt_df_cvaw_covid$score_avg >= 0, "pink", "lightgreen"), size = 0.6)+
     geom_line(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), color = "darkgray") +
     geom_point(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), 
                color = ifelse(TAIEX_COVID_df$日新增案例變動率 >= 0, "red", "darkgreen"), 
@@ -809,7 +809,7 @@ ggplotly(temp_p)
 # stock板對新增人數變動率
 temp_p =ggplot()+
     geom_hline(yintercept = 0) +
-    geom_point(data = plt_df_cvaw_stock, aes(x = Date, y = score_avg), color = ifelse(plt_df_cvaw_stock$score_avg >= 0, "pink", "lightgreen"), size = 1)+
+    geom_point(data = plt_df_cvaw_stock, aes(x = Date, y = score_avg), color = ifelse(plt_df_cvaw_stock$score_avg >= 0, "pink", "lightgreen"), size = 0.6)+
     geom_line(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*10), color = "darkgray") + 
     geom_point(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*10), 
                color = ifelse(TAIEX_COVID_df$日新增案例變動率 >= 0, "red", "darkgreen"), 
@@ -829,7 +829,7 @@ Stock 版在新增病例變動率上，當出現負面情緒時（五月十五�
 # covid-19板對大盤變動率
 temp_p = ggplot()+
     geom_hline(yintercept = 0) +
-    geom_point(data = plt_df_cvaw_covid, aes(x = Date , y = score_avg), color = ifelse(plt_df_cvaw_covid$score_avg >= 0, "pink", "lightgreen"), size = 1)+
+    geom_point(data = plt_df_cvaw_covid, aes(x = Date , y = score_avg), color = ifelse(plt_df_cvaw_covid$score_avg >= 0, "pink", "lightgreen"), size = 0.6)+
     geom_line(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), color = "darkgray") +
     geom_point(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), 
                color = ifelse(TAIEX_COVID_df$大盤變動率 >= 0, "red", "darkgreen"), 
@@ -844,7 +844,7 @@ ggplotly(temp_p)
 # stock板對新增人數變動率
 temp_p =ggplot()+
     geom_hline(yintercept = 0) +
-    geom_point(data = plt_df_cvaw_stock, aes(x = Date, y = score_avg), color = ifelse(plt_df_cvaw_stock$score_avg >= 0, "pink", "lightgreen"), size = 1)+
+    geom_point(data = plt_df_cvaw_stock, aes(x = Date, y = score_avg), color = ifelse(plt_df_cvaw_stock$score_avg >= 0, "pink", "lightgreen"), size = 0.6)+
     geom_line(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*10), color = "darkgray") + 
     geom_point(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*10), 
                color = ifelse(TAIEX_COVID_df$大盤變動率 >= 0, "red", "darkgreen"), 
@@ -863,7 +863,7 @@ ggplotly(temp_p)
 # coivd-19版對類股
 temp_p= ggplot()+
     geom_hline(yintercept = 0) +
-    geom_point(data = plt_df_cvaw_covid, aes(x = Date , y = score_avg), color = ifelse(plt_df_cvaw_covid$score_avg >= 0, "pink", "lightgreen"), size = 1)+
+    geom_point(data = plt_df_cvaw_covid, aes(x = Date , y = score_avg), color = ifelse(plt_df_cvaw_covid$score_avg >= 0, "pink", "lightgreen"), size = 0.6)+
     geom_line(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), color = "darkgray") +
     geom_point(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), 
                color = ifelse(TAIEX_ROC_df$觀光 >= 0, "red", "darkgreen"), 
@@ -878,7 +878,7 @@ ggplotly(temp_p)
 # stock板對類股
 temp_p=ggplot()+
     geom_hline(yintercept = 0) +
-    geom_point(data = plt_df_cvaw_stock, aes(x = Date, y = score_avg), color = ifelse(plt_df_cvaw_stock$score_avg >= 0, "pink", "lightgreen"), size = 1)+
+    geom_point(data = plt_df_cvaw_stock, aes(x = Date, y = score_avg), color = ifelse(plt_df_cvaw_stock$score_avg >= 0, "pink", "lightgreen"), size = 0.6)+
     geom_line(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*5), color = "darkgray") + 
     geom_point(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*5), 
                color = ifelse(TAIEX_ROC_df$觀光 >= 0, "red", "darkgreen"), 
@@ -894,7 +894,7 @@ ggplotly(temp_p)
 # coivd-19版對類股
 temp_p= ggplot()+
     geom_hline(yintercept = 0) +
-    geom_point(data = plt_df_cvaw_covid, aes(x = Date , y = score_avg), color = ifelse(plt_df_cvaw_covid$score_avg >= 0, "pink", "lightgreen"), size = 1)+
+    geom_point(data = plt_df_cvaw_covid, aes(x = Date , y = score_avg), color = ifelse(plt_df_cvaw_covid$score_avg >= 0, "pink", "lightgreen"), size = 0.6)+
     geom_line(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), color = "darkgray") +
     geom_point(data = group_plt_df_cvaw_covid, aes(x = Date, y = score_avg_date*5), 
                color = ifelse(TAIEX_ROC_df$光電 >= 0, "red", "darkgreen"), 
@@ -909,7 +909,7 @@ ggplotly(temp_p)
 # stock板對類股
 temp_p=ggplot()+
     geom_hline(yintercept = 0) +
-    geom_point(data = plt_df_cvaw_stock, aes(x = Date, y = score_avg), color = ifelse(plt_df_cvaw_stock$score_avg >= 0, "pink", "lightgreen"), size = 1)+
+    geom_point(data = plt_df_cvaw_stock, aes(x = Date, y = score_avg), color = ifelse(plt_df_cvaw_stock$score_avg >= 0, "pink", "lightgreen"), size = 0.6)+
     geom_line(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*5), color = "darkgray") + 
     geom_point(data = group_plt_df_cvaw_stock, aes(x = Date, y = score_avg_date*5), 
                color = ifelse(TAIEX_ROC_df$光電 >= 0, "red", "darkgreen"), 
