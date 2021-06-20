@@ -1,7 +1,7 @@
 ---
 title: "RLADS  \nFinal Project and Presentation  \n探討各面向疫情與股市之關係"
 date: |
-  | 2021-06-17
+  | 2021-06-24
   |
   |
 author: "戴若竹(材料四 B06507019)  \n余孟琦(會計四 B06702049)  \n洪智恆(財金二 B08703026)  \n林宣戎(圖資四 B06106011)"
@@ -114,22 +114,22 @@ tw_cat_rmse <- function(df){
 
 ```{r warning=FALSE, message=FALSE}
 # read data
-list.files("../rlads_Final_Project/data/stock")
+list.files("../data/stock")
 # [1] "BTC-Oil-Gold-COVID.csv" "SP500.csv" "SP500_USnewcases.csv"   "TAIEX-COVID.csv"        "TAIEX.csv"              "TAIEX_7MA.csv"          "TAIEX_ROC.csv"         
 ```
 
 ```{r warning=FALSE, message=FALSE}
-btc_oil_gold = read.csv("../rlads_Final_Project/data/stock/BTC-Oil-Gold-COVID.csv", encoding = "UTF-8") # 比特幣-原油-黃金價格,七日簡單均線,變動率
-US_SP500_ALL = read.csv("../rlads_Final_Project/data/stock/SP500.csv", encoding = "UTF-8") # 美股標普五百指數原始數值
-US_SP500_CAT = read.csv("../rlads_Final_Project/data/stock/SP500_USnewcases.csv", encoding = "UTF-8") # 美股標普五百各類原始數值
-TAIEX_COVID = read.csv("../rlads_Final_Project/data/stock/TAIEX-COVID.csv", encoding = "UTF-8") # 台股大盤,七日簡單均線,變動率
-TAIEX = read.csv("../rlads_Final_Project/data/stock/TAIEX.csv", encoding = "UTF-8") # 台股類股原始數值
-TAIEX_7MA = read.csv("../rlads_Final_Project/data/stock/TAIEX_7MA.csv", encoding = "UTF-8") # 台股類股七日簡單均線
-TAIEX_ROC = read.csv("../rlads_Final_Project/data/stock/TAIEX_ROC.csv", encoding = "UTF-8") # 台股類股變動率
+btc_oil_gold = read.csv("../data/stock/BTC-Oil-Gold-COVID.csv", encoding = "UTF-8") # 比特幣-原油-黃金價格,七日簡單均線,變動率
+US_SP500_ALL = read.csv("../data/stock/SP500.csv", encoding = "UTF-8") # 美股標普五百指數原始數值
+US_SP500_CAT = read.csv("../data/stock/SP500_USnewcases.csv", encoding = "UTF-8") # 美股標普五百各類原始數值
+TAIEX_COVID = read.csv("../data/stock/TAIEX-COVID.csv", encoding = "UTF-8") # 台股大盤,七日簡單均線,變動率
+TAIEX = read.csv("../data/stock/TAIEX.csv", encoding = "UTF-8") # 台股類股原始數值
+TAIEX_7MA = read.csv("../data/stock/TAIEX_7MA.csv", encoding = "UTF-8") # 台股類股七日簡單均線
+TAIEX_ROC = read.csv("../data/stock/TAIEX_ROC.csv", encoding = "UTF-8") # 台股類股變動率
 
 # 整合至資料列表
 data_list = list(btc_oil_gold, US_SP500_ALL, US_SP500_CAT, TAIEX_COVID, TAIEX, TAIEX_7MA, TAIEX_ROC)
-names(data_list) = gsub("-", "_",list.files('data\\stock'))
+names(data_list) = gsub("-", "_",list.files('../data/stock'))
 
 ```
 
@@ -433,7 +433,7 @@ ggplotly(p)
 ### 美國SP500各類股指數對確診人數之rmse(每月)
 
 ```{r warning = FALSE, message=FALSE}
-dfRMSE = read.csv("RMSE.csv", encoding ="UTF-8")
+dfRMSE = read.csv("../data/output data/RMSE.csv", encoding ="UTF-8")
 dfRMSE['Date']<- as.Date(as.yearmon(unlist(dfRMSE['Date']), "%Y/%m"))+14
 casesCol = data_list[[2]][c("Date", "US_COVID") ]
 casesCol['Date']<- as.Date(unlist(casesCol['Date'])) 
@@ -688,30 +688,30 @@ for (i in 1:32){
 ```{r warning=FALSE, message=FALSE}
 ## 台股
 # 大盤
-TAIEX_COVID_df <- as_tibble(readr::read_csv("../rlads_Final_Project/data/stock/TAIEX-COVID.csv")) %>%
+TAIEX_COVID_df <- as_tibble(readr::read_csv("../data/stock/TAIEX-COVID.csv")) %>% 
     mutate(Date = as.Date(X1)) %>%
     select(-X1) %>%
     filter(between(Date, as.Date("2021-04-01"), as.Date("2021-05-31")))
 # 類股
-TAIEX_df <- as_tibble(readr::read_csv("../rlads_Final_Project/data/stock/TAIEX.csv")) %>%
+TAIEX_df <- as_tibble(readr::read_csv("../data/stock/TAIEX.csv")) %>%
     select(-X1) %>%
     mutate(Date = as.Date(Date)) %>%
     filter(between(Date, as.Date("2021-04-01"), as.Date("2021-05-31")))
 # 類股變動率
-TAIEX_ROC_df <- as_tibble(readr::read_csv("../rlads_Final_Project/data/stock/TAIEX_ROC.csv")) %>%
+TAIEX_ROC_df <- as_tibble(readr::read_csv("../data/stock/TAIEX_ROC.csv")) %>%
     select(-X1) %>%
     mutate(Date = as.Date(Date)) %>%
     filter(between(Date, as.Date("2021-04-01"), as.Date("2021-05-31")))
 
 # covid板
-plt_df_cvaw_covid <- as_tibble(readr::read_csv("../rlads_Final_Project/data/cvaw/cvaw_covid.csv")) %>%
+plt_df_cvaw_covid <- as_tibble(readr::read_csv("../data/cvaw/cvaw_covid.csv")) %>%
     mutate(Date = as.Date(Date)) %>%
     filter(between(Date, as.Date("2021-04-01"), as.Date("2021-05-31"))) %>%
     mutate(score_sum = round(Valence_Sum * (Arousal_Sum + words_Num * 5), 6), 
            score_avg = if_else(score_sum == 0, 0, round(score_sum / ((words_Num)** 2), 6)))
 
 # stock板
-plt_df_cvaw_stock <- as_tibble(readr::read_csv("../rlads_Final_Project/data/cvaw/cvaw_stock.csv")) %>%
+plt_df_cvaw_stock <- as_tibble(readr::read_csv("../data/cvaw/cvaw_stock.csv")) %>%
     mutate(Date = as.Date(Date)) %>%
     filter(between(Date, as.Date("2021-04-01"), as.Date("2021-05-31"))) %>%
     mutate(score_sum = round(Valence_Sum * (Arousal_Sum + words_Num * 5), 6), 
