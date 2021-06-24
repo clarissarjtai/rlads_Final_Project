@@ -76,7 +76,7 @@ library(tidyr)
 # library(ggpmisc)
 ```
 
-定義後續使用之函數
+**定義後續使用之函數**
 ```{r warning=FALSE, message=FALSE}
 # 計算標準化數據與其七日簡單平均、七日指數平均、變動率
 getMA_ROC <- function(df, prefix){
@@ -116,7 +116,7 @@ list.files("../data/stock")
 
 ```{r warning=FALSE, message=FALSE}
 btc_oil_gold = read.csv("../data/stock/BTC-Oil-Gold-COVID.csv", encoding = "UTF-8") # 比特幣-原油-黃金價格,七日簡單均線,變動率
-US_SP500_ALL = read.csv("../data/stock/SP500.csv", encoding = "UTF-8") # 美股標普五百指數原始數值
+US_SP500_ALL = read.csv("../data/stock/SP500.csv", encoding = "UTF-8") # 標普五百指數原始數值
 US_SP500_CAT = read.csv("../data/stock/SP500_USnewcases.csv", encoding = "UTF-8") # 美股標普五百各類原始數值
 TAIEX_COVID = read.csv("../data/stock/TAIEX-COVID.csv", encoding = "UTF-8") # 台股大盤,七日簡單均線,變動率
 TAIEX = read.csv("../data/stock/TAIEX.csv", encoding = "UTF-8") # 台股類股原始數值
@@ -169,7 +169,7 @@ data_list = list(TW_COVID, US_COVID, BTC, OIL, GOLD, TAIEX_ALL, US_SP500_ALL)
 head(data_list[[1]])
 ```
 ## 計算標準化後數值
-
+對每個原始數值進行標準化後，計算七日簡單平均、變動率等等。
 
 ```{r warning=FALSE, message=FALSE}
 col <- c("TW_COVID", "US_COVID", "BTC", "Oil", "Gold", "大盤", "SP500")
@@ -243,10 +243,10 @@ ggplotly(p)
 # saveWidget(ggplotly(p), file="plot\\stock\\SP500_7MA對US_COVID_std.html")
 ```
 
-
 ### 台灣大盤指數-COVID-19確診人數散佈圖/趨勢圖
 
 而這邊可以看到台灣大盤指數對確診人數的趨勢圖，可以發現台灣目前的狀況類似前期的美國，呈現負相關。
+
 ```{r warning=FALSE, message=FALSE}
 temp_data = full_join(data_list[[6]], data_list[[1]], by = "Date") # [c("Date","大盤_std","大盤_7MA", "大盤_7EMA","大盤_ROC","TW_COVID_std")]
 
@@ -279,10 +279,12 @@ ggplotly(p)
 
 ```
 
-
-
 ### 比特幣-COVID-19確診人數趨勢圖/散佈圖
-除了股市外，我們也有對 比特幣、黃金及石油價格 作分析，比較有趣的是比特幣的成長趨勢圖，這裡可以看到比特幣價格回漲的趨勢比標普五百指數快了很多。
+
+除了股市外，我們也有對比特幣、黃金及石油價格作分析，對每項變動率對確診人數趨勢圖/散佈圖及每項對確診人數趨勢圖/散佈圖。觀察各項數值的變動趨勢。
+
+比較有趣的是比特幣的成長趨勢圖，這裡可以看到比特幣價格回漲的趨勢比標普五百指數快了很多。
+
 ```{r warning=FALSE, message=FALSE}
 temp_data = full_join(data_list[[3]], data_list[[2]], by = "Date")
 
@@ -314,8 +316,6 @@ ggplotly(p)
 # saveWidget(ggplotly(p), file="plot\\stock\\SP500_7MA對US_COVID_std.html")
 
 ```
-
-
 
 ### 石油-COVID-19確診人數趨勢圖/散佈圖
 
@@ -351,8 +351,6 @@ ggplotly(p)
 
 ```
 
-
-
 ### 黃金-COVID-19確診人數趨勢圖/散佈圖
 
 ```{r warning=FALSE, message=FALSE}
@@ -386,7 +384,6 @@ ggplotly(p)
 # saveWidget(ggplotly(p), file="plot\\stock\\SP500_7MA對US_COVID_std.html")
 
 ```
-
 
 ## 各樣重要指數不同時期rmse之探討
 
@@ -428,7 +425,7 @@ ggplotly(p)
 
 
 ### 美國SP500各類股指數對確診人數之rmse(每月)
-
+**美股資料整理**
 ```{r warning = FALSE, message=FALSE}
 dfRMSE = read.csv("../data/output data/RMSE.csv", encoding ="UTF-8")
 dfRMSE['Date']<- as.Date(as.yearmon(unlist(dfRMSE['Date']), "%Y/%m"))+14
@@ -547,7 +544,7 @@ ggplotly(p)
 ```
 台灣股市的資料為今年4月1號到5月30號，剛好涵蓋今年五月這一波疫情爆發。可以看到台灣大盤指數的RMSE在疫情爆發後有顯著波動，Sign精準地與病例數呈現了負向相關，可以說疫情的爆發在短期內對台股大盤影響顯著。
 
-台灣類股資料處理
+**台灣類股資料處理**
 ```{r warning=FALSE, message=FALSE}
 TAIEX_CAT_plot = data.frame()
 TAIEX_CAT_w_COVID = list()
