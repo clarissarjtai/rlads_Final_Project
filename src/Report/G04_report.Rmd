@@ -59,8 +59,7 @@ knitr::opts_chunk$set(echo = FALSE)
 # 資料前處理
 對資料表進行初步檢視後，進行整理，以便後續進行資料視覺化。
 
-
-import packages
+**import packages**
 
 ```{r warning = FALSE, message = FALSE}
 library(htmlwidgets)
@@ -263,7 +262,9 @@ ggplotly(p)
 ```
 
 ### 台灣大盤指數變動率-COVID-19新增確診人數變動率散佈圖/趨勢圖
-將大盤指數乘以100使圖表比較更直觀
+
+將大盤指數乘以100使圖表比較更直觀。
+
 ```{r warning=FALSE, message=FALSE}
 temp_data = full_join(data_list[[6]], data_list[[1]], by = "Date") # [c("Date","大盤_std","大盤_7MA", "大盤_7EMA","大盤_ROC","TW_COVID_std")]
 
@@ -557,7 +558,6 @@ head(TAIEX_CAT_plot)
 head(TAIEX_CAT_w_COVID)
 ```
 
-
 因台灣類股分類數量太多，不易呈現。我們將32類股分為：工業相關、電子相關與服務相關。
 ```{r warning=FALSE, message=FALSE}
 # 類股分類
@@ -749,7 +749,6 @@ plt_df_cvaw_stock <- as_tibble(readr::read_csv("../data/cvaw/cvaw_stock.csv")) %
     mutate(score_sum = round(Valence_Sum * (Arousal_Sum + words_Num * 5), 6), 
            score_avg = if_else(score_sum == 0, 0, round(score_sum / ((words_Num)** 2), 6)))
 ```
-
 
 ```{r warning=FALSE, message=FALSE}
 ## 計算每天各版平均情緒分數
